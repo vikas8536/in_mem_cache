@@ -10,7 +10,7 @@ class ConcurrentConsistencyTest {
     @Test
     void readAfterWriteConsistencyUnderConcurrentWrites() throws Exception {
         InMemCache<Integer, Integer> cache = InMemCacheBuilder
-            .newBuilder().maxEntries(1000).segments(4).build(k -> null);
+            .newBuilder().maxEntries(100_000).segments(8).build(k -> null);
 
         int threads = 8;
         int opsPerThread = 10_000;
@@ -39,7 +39,7 @@ class ConcurrentConsistencyTest {
     @Test
     void concurrentPutDoesNotLoseEntries() throws Exception {
         InMemCache<Integer, Integer> cache = InMemCacheBuilder
-            .newBuilder().maxEntries(10_000).segments(8).build(k -> null);
+            .newBuilder().maxEntries(100_000).segments(8).build(k -> null);
 
         int threads = 10;
         int entriesPerThread = 1000;
