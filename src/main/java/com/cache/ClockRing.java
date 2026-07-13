@@ -31,6 +31,10 @@ class ClockRing<K> {
         } while (ring[hand] == null && attempts < size);
     }
 
+    void clearCurrentSlot() {
+        ring[hand] = null;
+    }
+
     void clearSlot(int position) {
         ring[position % size] = null;
     }
