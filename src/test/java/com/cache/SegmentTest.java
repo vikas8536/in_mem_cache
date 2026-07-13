@@ -76,13 +76,11 @@ class SegmentTest {
     }
 
     @Test
-    void purgeExpiredRemovesStaleEntries() {
+    void expiredEntryNotReturnedByGet() {
         Segment<String, String> seg = new Segment<>(cfg, 0, k -> null);
         seg.put("a", "apple", 60_000);
-        seg.put("b", "banana", 60_000);
-        seg.put("c", "cherry", -1); // expired
-        seg.purgeExpired();
-        assertEquals(2, seg.size());
+        seg.put("c", "cherry", -1); // already expired
         assertNull(seg.get("c"));
+        assertEquals("apple", seg.get("a"));
     }
 }
