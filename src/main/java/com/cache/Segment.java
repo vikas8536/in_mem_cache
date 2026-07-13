@@ -15,7 +15,7 @@ class Segment<K, V> {
     private final RefreshFunction<K, V> refreshFn;
 
     Segment(CacheConfig config, int segmentIndex, RefreshFunction<K, V> refreshFn) {
-        this.maxEntries = config.maxEntries() / config.segments() + 1;
+        this.maxEntries = Math.max(1, config.maxEntries() / config.segments());
         this.ttlBuckets = config.ttlBuckets();
         this.ttlTickMs = config.ttlTickMs();
         this.clock = new ClockRing<>(this.maxEntries);
