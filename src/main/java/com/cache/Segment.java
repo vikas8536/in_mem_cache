@@ -6,8 +6,8 @@ import java.util.concurrent.locks.StampedLock;
 
 class Segment<K, V> {
     private final ConcurrentHashMap<K, Node<V>> chm = new ConcurrentHashMap<>();
-    private final ClockRing<K> clock;
-    private final TtlRing<K> ttlRing;
+    private ClockRing<K> clock;
+    private TtlRing<K> ttlRing;
     private final StampedLock lock = new StampedLock();
     private final int maxEntries;
     private final int ttlBuckets;
@@ -55,8 +55,10 @@ class Segment<K, V> {
     void put(K key, V value, long ttlMs) {
         long stamp = lock.writeLock();
         try {
-            while (chm.size() >= maxEntries) {
-                evictOne();
+            if (!chm.containsKey(key)) {
+                while (chm.size() >= maxEntries) {
+                    evictOne();
+                }
             }
             long expiresAtNanos = ttlMs == Long.MAX_VALUE
                 ? Long.MAX_VALUE
@@ -90,6 +92,8 @@ class Segment<K, V> {
         long stamp = lock.writeLock();
         try {
             chm.clear();
+            this.clock = new ClockRing<>(maxEntries);
+            this.ttlRing = new TtlRing<>(ttlBuckets);
         } finally {
             lock.unlockWrite(stamp);
         }

@@ -2,7 +2,7 @@ package com.cache;
 
 public class InMemCacheBuilder {
     private int maxEntries = 1_000_000;
-    private int segments = Math.max(1, Runtime.getRuntime().availableProcessors() * 2);
+    private int segments = Integer.highestOneBit(Math.max(1, Runtime.getRuntime().availableProcessors() * 2));
     private long ttlTickMs = 10;
     private int ttlBuckets = 1000;
 
